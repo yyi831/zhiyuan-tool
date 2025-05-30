@@ -1,41 +1,100 @@
 import React, { useState } from 'react';
 
-export default function App() {
+const mockSchools = [
+  {
+    name: "华中科技大学",
+    type: "985/211",
+    city: "武汉",
+    province: "湖北",
+    minScore: 640,
+    intro: "华中科技大学是中国著名的工科强校，位于湖北武汉。",
+    majors: ["自动化", "计算机科学与技术"]
+  },
+  {
+    name: "湖南大学",
+    type: "211",
+    city: "长沙",
+    province: "湖南",
+    minScore: 610,
+    intro: "湖南大学是位于长沙的国家重点大学，历史悠久。",
+    majors: ["金融学", "法学"]
+  },
+  {
+    name: "中南大学",
+    type: "985/211",
+    city: "长沙",
+    province: "湖南",
+    minScore: 630,
+    intro: "中南大学以医学与工程学科见长，位于湖南长沙。",
+    majors: ["临床医学", "土木工程"]
+  }
+];
+
+const App = () => {
   const [score, setScore] = useState('');
   const [province, setProvince] = useState('');
   const [recommendations, setRecommendations] = useState([]);
 
-  const mockData = [
-    { school: '北京大学', type: '985/211', city: '北京', minScore: 680 },
-    { school: '复旦大学', type: '985/211', city: '上海', minScore: 670 },
-    { school: '浙江大学', type: '985/211', city: '杭州', minScore: 660 },
-    { school: '华中科技大学', type: '985/211', city: '武汉', minScore: 640 },
-    { school: '湖南大学', type: '211', city: '长沙', minScore: 610 },
-  ];
-
   const handleSubmit = () => {
     const numScore = parseInt(score);
-    if (!province || isNaN(numScore)) return alert("请输入有效信息");
-    const result = mockData.filter(item => numScore >= item.minScore - 20);
+    if (!province || isNaN(numScore)) {
+      alert("请输入有效信息");
+      return;
+    }
+
+    const result = mockSchools
+      .filter(s => numScore >= s.minScore - 20)
+      .map(s => {
+        const level = numScore >= s.minScore + 10 ? "冲一冲" :
+                      numScore >= s.minScore ? "稳一稳" : "保一保";
+        return { ...s, level };
+      });
+
     setRecommendations(result);
   };
 
   return (
-    <div style={{ padding: 20, fontFamily: 'sans-serif' }}>
-      <h1>志愿填报助手</h1>
-      <input placeholder="高考分数" value={score} onChange={e => setScore(e.target.value)} style={{ display: 'block', marginBottom: 10 }} />
-      <input placeholder="所在省份" value={province} onChange={e => setProvince(e.target.value)} style={{ display: 'block', marginBottom: 10 }} />
-      <button onClick={handleSubmit}>推荐志愿</button>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <h1 className="text-3xl font-bold text-center mb-6">🎓 志愿填报助手</h1>
+
+      <div className="max-w-md mx-auto space-y-4">
+        <input
+          type="number"
+          className="w-full border rounded px-4 py-2"
+          placeholder="请输入你的高考分数"
+          value={score}
+          onChange={(e) => setScore(e.target.value)}
+        />
+        <input
+          type="text"
+          className="w-full border rounded px-4 py-2"
+          placeholder="请输入所在省份（如 湖南）"
+          value={province}
+          onChange={(e) => setProvince(e.target.value)}
+        />
+        <button
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          onClick={handleSubmit}
+        >
+          推荐志愿
+        </button>
+      </div>
+
       {recommendations.length > 0 && (
-        <div style={{ marginTop: 20 }}>
-          <h2>推荐结果：</h2>
-          <ul>
-            {recommendations.map((item, i) => (
-              <li key={i}>{item.school}（{item.type} · {item.city}） - 录取线约：{item.minScore}</li>
-            ))}
-          </ul>
+        <div className="mt-8 max-w-2xl mx-auto">
+          <h2 className="text-xl font-semibold mb-4">推荐结果：</h2>
+          {recommendations.map((item, index) => (
+            <div key={index} className="bg-white rounded-lg shadow p-4 mb-4">
+              <h3 className="text-lg font-bold">{item.name} ({item.type} · {item.city})</h3>
+              <p className="text-sm text-gray-600 mb-1">录取线约：{item.minScore}，推荐策略：{item.level}</p>
+              <p className="text-sm text-gray-800 mb-1">推荐专业：{item.majors.join(' / ')}</p>
+              <p className="text-sm text-gray-700">{item.intro}</p>
+            </div>
+          ))}
         </div>
       )}
     </div>
   );
-}
+};
+
+export default App;
