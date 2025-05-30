@@ -1,5 +1,5 @@
 {
-  "name": "zhiyuan-tool-v2",
+  "name": "zhiyuan-tool-v3",
   "version": "1.0.0",
   "scripts": {
     "dev": "vite",
@@ -8,7 +8,10 @@
   },
   "dependencies": {
     "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.22.0",
+    "lucide-react": "^0.292.0",
+    "classnames": "^2.3.2"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.0.0",
